@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Manual do Robô Xiaozhi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: sidebar index + reading column; each function is a "card" pairing a drawn screen of the robot with how to use it. */
+:root {
+  --bg: #f3f6f8;
+  --paper: #ffffff;
+  --ink: #14212b;
+  --muted: #55646f;
+  --line: #d7e0e6;
+  --accent: #0e8fa8;
+  --accent-soft: #dff3f7;
+  --speech: #eef1fb;
+  --speech-ink: #2b3a8f;
+  --warn: #b45309;
+  --warn-soft: #fdf0dd;
+  --device: #2a3138;
+  --device-edge: #11161a;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1418; --paper: #141e24; --ink: #e6eef2; --muted: #9aabb5; --line: #26343c;
+    --accent: #3cc6df; --accent-soft: #10323a; --speech: #1a2142; --speech-ink: #b9c4ff;
+    --warn: #f0a44b; --warn-soft: #34240f; --device: #3a444c; --device-edge: #050708;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1418; --paper: #141e24; --ink: #e6eef2; --muted: #9aabb5; --line: #26343c;
+  --accent: #3cc6df; --accent-soft: #10323a; --speech: #1a2142; --speech-ink: #b9c4ff;
+  --warn: #f0a44b; --warn-soft: #34240f; --device: #3a444c; --device-edge: #050708;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 40px; padding-block: 32px 80px; }
+nav.index { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; max-height: calc(100vh - 40px); overflow-y: auto; }
+nav.index h2 { font-family: var(--font-display); font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+nav.index ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; counter-reset: s; }
+nav.index a { display: block; padding: 5px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 15px; }
+nav.index a:hover, nav.index a:focus-visible { background: var(--accent-soft); color: var(--accent); outline: none; }
+main { min-width: 0; }
+header.hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: center; margin-bottom: 40px; }
+header.hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(34px, 5vw, 54px); line-height: 1.05; margin: 0 0 14px; text-wrap: balance; }
+header.hero p { color: var(--muted); max-width: 60ch; margin: 0 0 10px; }
+.kicker { font-family: var(--font-mono); font-size: 13px; color: var(--accent); letter-spacing: .04em; margin-bottom: 10px; }
+section { margin-top: 56px; scroll-margin-top: 20px; }
+section > h2 { font-family: var(--font-display); font-weight: 800; font-size: 30px; margin: 0 0 6px; text-wrap: balance; }
+section > p.lead { color: var(--muted); margin: 0 0 22px; max-width: 65ch; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 26px; align-items: start; }
+.card + .card { margin-top: 18px; }
+.card.text-only { grid-template-columns: minmax(0, 1fr); }
+.card h3 { font-family: var(--font-display); font-weight: 600; font-size: 21px; margin: 0 0 8px; }
+.card p { margin: 0 0 10px; max-width: 65ch; }
+.card ul, .card ol { margin: 0 0 10px; padding-left: 20px; max-width: 65ch; }
+.card li { margin-bottom: 4px; }
+figure { margin: 0; }
+figure svg { width: 100%; max-width: 220px; height: auto; display: block; margin: 0 auto; }
+figcaption { font-size: 13px; color: var(--muted); text-align: center; margin-top: 6px; }
+.say { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; }
+.say span { background: var(--speech); color: var(--speech-ink); border-radius: 14px 14px 14px 4px; padding: 5px 12px; font-size: 15px; }
+.say span::before { content: "“"; } .say span::after { content: "”"; }
+.note { background: var(--warn-soft); color: var(--ink); border-left: 3px solid var(--warn); border-radius: 8px; padding: 10px 14px; margin: 10px 0 0; font-size: 15px; max-width: 65ch; }
+code, kbd { font-family: var(--font-mono); font-size: 14px; background: var(--accent-soft); color: var(--ink); border-radius: 5px; padding: 1px 6px; }
+pre { font-family: var(--font-mono); font-size: 13.5px; background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; overflow-x: auto; margin: 0; }
+.code { position: relative; margin: 6px 0 12px; min-width: 0; }
+.code pre { padding-right: 82px; }
+.copy { position: absolute; top: 8px; right: 8px; font-family: var(--font-body); font-size: 13px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 8px; padding: 3px 10px; cursor: pointer; }
+.copy:hover, .copy:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+.table-wrap { overflow-x: auto; margin: 6px 0 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; min-width: 420px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-display); font-weight: 600; color: var(--muted); font-size: 14px; letter-spacing: .03em; }
+.btn-chip { display: inline-block; min-width: 34px; text-align: center; font-family: var(--font-mono); font-weight: 500; background: var(--device); color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 13px; }
+.styles { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+.styles span { border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-size: 14px; }
+a { color: var(--accent); }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+@media (max-width: 900px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  nav.index { position: static; max-height: none; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+  nav.index ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); }
+  header.hero { grid-template-columns: minmax(0, 1fr); }
+  header.hero figure { order: -1; }
+}
+</style>
+
+<!-- Shared device frame and screen clip -->
+<svg class="sprite" aria-hidden="true">
+  <defs>
+    <clipPath id="scr"><rect x="10" y="10" width="240" height="240" rx="16"/></clipPath>
+    <symbol id="frame" viewBox="0 0 260 300">
+      <rect x="1" y="1" width="258" height="298" rx="26" fill="var(--device)" stroke="var(--device-edge)" stroke-width="2"/>
+      <rect x="10" y="10" width="240" height="240" rx="16" fill="#000"/>
+      <g font-family="JetBrains Mono, monospace" font-size="11" fill="#cfd8dc" text-anchor="middle">
+        <rect x="58" y="264" width="44" height="22" rx="11" fill="#151a1e"/><text x="80" y="279">−</text>
+        <rect x="108" y="264" width="44" height="22" rx="11" fill="#151a1e"/><text x="130" y="279">PWR</text>
+        <rect x="158" y="264" width="44" height="22" rx="11" fill="#151a1e"/><text x="180" y="279">+</text>
+      </g>
+    </symbol>
+    <symbol id="eyes" viewBox="0 0 240 240">
+      <rect x="44" y="76" width="62" height="88" rx="22" fill="#22d3ee"/>
+      <rect x="134" y="76" width="62" height="88" rx="22" fill="#22d3ee"/>
+      <rect x="56" y="86" width="16" height="12" rx="6" fill="#fff" opacity=".55"/>
+      <rect x="146" y="86" width="16" height="12" rx="6" fill="#fff" opacity=".55"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <nav class="index" aria-label="Índice">
+    <h2>Índice</h2>
+    <ol>
+      <li><a href="#comecar">Primeiros passos</a></li>
+      <li><a href="#botoes">Os 3 botões</a></li>
+      <li><a href="#rosto">Rosto e emoções</a></li>
+      <li><a href="#tempo">Timer e alarme</a></li>
+      <li><a href="#memoria">Memória pessoal</a></li>
+      <li><a href="#musica">Música e rádio</a></li>
+      <li><a href="#videos">Vídeos</a></li>
+      <li><a href="#jogos">Jogos</a></li>
+      <li><a href="#internet">Internet e fotos</a></li>
+      <li><a href="#clima">Clima e cotações</a></li>
+      <li><a href="#tradutor">Tradutor</a></li>
+      <li><a href="#casa">Casa inteligente</a></li>
+      <li><a href="#config">Configurações</a></li>
+      <li><a href="#pc">Robô e PC</a></li>
+      <li><a href="#specs">Especificações</a></li>
+      <li><a href="#problemas">Problemas comuns</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <div>
+        <div class="kicker">Waveshare ESP32-S3-LCD-1.54 · firmware personalizado</div>
+        <h1>Manual do Robô Xiaozhi</h1>
+        <p>Tudo o que o robô sabe fazer, com o que aparece na tela e o que falar para ele. Ele entende português: fale normalmente, as frases abaixo são só exemplos.</p>
+        <p>Os desenhos mostram a tela de 240×240 e os três botões. Na placa, os botões ficam na lateral.</p>
+      </div>
+      <figure>
+        <svg viewBox="0 0 260 300" role="img" aria-label="Robô com olhos azuis">
+          <use href="#frame" width="260" height="300"/>
+          <g clip-path="url(#scr)"><use href="#eyes" x="10" y="10" width="240" height="240"/></g>
+        </svg>
+      </figure>
+    </header>
+
+    <!-- 1 -->
+    <section id="comecar">
+      <h2>Primeiros passos</h2>
+      <p class="lead">Ligue o robô num carregador USB ou no PC. Ele precisa de WiFi com internet para conversar.</p>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Tela de configuração do WiFi">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif" text-anchor="middle">
+              <text x="120" y="70" fill="#fff" font-size="17">Configurar WiFi</text>
+              <text x="120" y="110" fill="#9fb3bf" font-size="13">Conecte o celular na rede</text>
+              <text x="120" y="134" fill="#22d3ee" font-size="15">Xiaozhi-XXXX</text>
+              <text x="120" y="170" fill="#9fb3bf" font-size="13">e abra 192.168.4.1</text>
+            </g>
+          </svg>
+          <figcaption>Primeira vez: o robô cria a rede dele</figcaption>
+        </figure>
+        <div>
+          <h3>Conectar ao WiFi</h3>
+          <ol>
+            <li>Na primeira vez, o robô cria uma rede WiFi chamada <code>Xiaozhi-…</code>.</li>
+            <li>Conecte o celular nessa rede. A página de configuração abre sozinha. Se não abrir, acesse <code>192.168.4.1</code>.</li>
+            <li>Escolha a rede da sua casa, digite a senha e salve. O robô reinicia e conecta.</li>
+          </ol>
+          <p>Para trocar de rede depois, peça ao robô. Ele pede confirmação antes de mudar.</p>
+          <div class="say"><span>Entra no modo de configuração de WiFi</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Código de ativação na tela">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif" text-anchor="middle">
+              <text x="120" y="66" fill="#fff" font-size="16">Ativação</text>
+              <text x="120" y="96" fill="#9fb3bf" font-size="12">Acesse xiaozhi.me e digite</text>
+              <text x="120" y="142" fill="#22d3ee" font-size="34" font-family="JetBrains Mono, monospace" letter-spacing="2">482913</text>
+              <text x="120" y="178" fill="#9fb3bf" font-size="12">(código de exemplo)</text>
+            </g>
+          </svg>
+          <figcaption>O código aparece uma vez só, na primeira vez</figcaption>
+        </figure>
+        <div>
+          <h3>Ativar o robô na sua conta (obrigatório)</h3>
+          <p>Depois de conectar ao WiFi pela primeira vez, o robô mostra e fala um <b>código de 6 dígitos</b>. Sem ativar, ele não conversa.</p>
+          <ol>
+            <li>No celular ou no computador, entre em <code>xiaozhi.me</code> e crie uma conta grátis, ou entre na sua.</li>
+            <li>No painel (Console), toque em <b>Adicionar dispositivo</b> (<i>Add device</i>).</li>
+            <li>Digite o código que está na tela do robô e confirme.</li>
+            <li>Pronto: o robô avisa que está ativado. Isso só é feito uma vez.</li>
+          </ol>
+          <p>No mesmo painel, nas configurações do agente, você escolhe a <b>voz</b>, o <b>idioma</b>, a <b>personalidade</b> e o nome do robô.</p>
+          <p class="note">Se o código sumir antes de você digitar, reinicie o robô tirando e colocando o cabo. Um código novo aparece.</p>
+        </div>
+      </div>
+
+      <div class="card text-only">
+        <div>
+          <h3>Bateria</h3>
+          <p>O robô funciona com uma bateria de lítio de 3,7 V ligada no conector de bateria da placa, e carrega pelo USB-C.</p>
+          <ul>
+            <li><b>Ligar:</b> aperte <span class="btn-chip">PWR</span>.</li>
+            <li><b>Desligar:</b> segure <span class="btn-chip">PWR</span> por alguns segundos.</li>
+            <li><b>Carregar:</b> ligue o cabo USB-C num carregador de celular. Ele funciona normalmente enquanto carrega.</li>
+            <li><b>Ver a carga:</b> pergunte <i>"quanto de bateria você tem?"</i>.</li>
+          </ul>
+          <p class="note">Na bateria, para economizar, ele se desliga sozinho depois de <b>5 minutos sem conversa</b>. Ele <b>não</b> desliga enquanto toca música ou vídeo, enquanto há um timer ou alarme marcado, ou durante o labirinto. Com um alarme para o dia seguinte, ele fica ligado a noite toda e gasta bateria: nesse caso, deixe no carregador. No carregador, ele nunca se desliga sozinho. Os avisos de lembretes da memória e o alerta de chuva só funcionam com ele ligado.</p>
+          <h3>Conversar</h3>
+          <p>Diga <b>"Jarvis"</b> (pronuncia-se "djárvis") ou aperte <span class="btn-chip">PWR</span> uma vez, e fale. Ele responde e continua ouvindo. Aperte <span class="btn-chip">PWR</span> de novo para encerrar a conversa.</p>
+          <p class="note">A palavra "Jarvis" só funciona com o robô <b>ligado no cabo</b> (carregador ou PC). Na bateria ela fica desligada para economizar: use o botão PWR.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="botoes">
+      <h2>Os 3 botões</h2>
+      <p class="lead">Cada botão muda de função conforme o que está na tela.</p>
+      <div class="card text-only">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Situação</th><th><span class="btn-chip">−</span></th><th><span class="btn-chip">PWR</span></th><th><span class="btn-chip">+</span></th></tr></thead>
+            <tbody>
+              <tr><td>Normal</td><td>Diminui o volume</td><td>Começa ou encerra a conversa · <b>segurar</b>: desliga (na bateria)</td><td>Aumenta o volume · <b>2 cliques</b>: menu de olhos</td></tr>
+              <tr><td>Menu de olhos</td><td>Estilo anterior</td><td>Confirma o estilo</td><td>Próximo estilo</td></tr>
+              <tr><td>Quiz</td><td>Responde A</td><td>Responde B</td><td>Responde C</td></tr>
+              <tr><td>Alarme tocando</td><td>Desliga</td><td>Desliga</td><td>Desliga</td></tr>
+              <tr><td>Labirinto</td><td>—</td><td>Sai do jogo</td><td>—</td></tr>
+              <tr><td>Página de configurações</td><td>—</td><td>Fecha a página</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Para gravar firmware com a placa travada, segure <span class="btn-chip">−</span> (BOOT) enquanto pluga o cabo.</p>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section id="rosto">
+      <h2>Rosto e emoções</h2>
+      <p class="lead">O rosto reage sozinho ao que acontece: à conversa, ao movimento, à hora do dia e ao silêncio.</p>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Olhos roxos">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)">
+              <rect x="44" y="76" width="62" height="88" rx="22" fill="#a855f7"/>
+              <rect x="134" y="76" width="62" height="88" rx="22" fill="#a855f7"/>
+              <rect x="56" y="86" width="16" height="12" rx="6" fill="#fff" opacity=".55"/>
+              <rect x="146" y="86" width="16" height="12" rx="6" fill="#fff" opacity=".55"/>
+            </g>
+          </svg>
+          <figcaption>Cor trocada por voz</figcaption>
+        </figure>
+        <div>
+          <h3>Cor dos olhos</h3>
+          <p>Pode ser qualquer cor: pelo nome, como vermelho, verde, azul, ciano, amarelo, laranja, roxo, rosa, magenta, branco ou dourado, ou por um código como <code>#FF8800</code>. A cor fica salva.</p>
+          <div class="say"><span>Muda a cor dos olhos para roxo</span><span>Deixa os olhos dourados</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Menu de estilos de olhos">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif" text-anchor="middle">
+              <text x="120" y="40" fill="#fff" font-size="15">Estilo dos olhos</text>
+              <ellipse cx="80" cy="118" rx="30" ry="40" fill="#22d3ee"/>
+              <ellipse cx="160" cy="118" rx="30" ry="40" fill="#22d3ee"/>
+              <ellipse cx="80" cy="124" rx="17" ry="24" fill="#0b3b4a"/>
+              <ellipse cx="160" cy="124" rx="17" ry="24" fill="#0b3b4a"/>
+              <circle cx="70" cy="104" r="8" fill="#fff"/><circle cx="150" cy="104" r="8" fill="#fff"/>
+              <circle cx="88" cy="134" r="4" fill="#fff"/><circle cx="168" cy="134" r="4" fill="#fff"/>
+              <rect x="60" y="190" width="120" height="28" rx="14" fill="#202020"/>
+              <text x="120" y="209" fill="#fff" font-size="14">‹  Anime  ›</text>
+            </g>
+          </svg>
+          <figcaption>Menu: − e + navegam, PWR confirma</figcaption>
+        </figure>
+        <div>
+          <h3>Estilo dos olhos (12 opções)</h3>
+          <div class="styles"><span>Robô</span><span>Oval brilhante</span><span>Binóculo</span><span>Pontinhos</span><span>Quadrado</span><span>Pixel</span><span>Desenho</span><span>Realista</span><span>Anime</span><span>Chibi</span><span>Gato</span><span>Vintage</span></div>
+          <p>Peça pelo nome ou abra o menu: dê <b>2 cliques</b> em <span class="btn-chip">+</span> ou peça por voz. No menu, <span class="btn-chip">−</span> e <span class="btn-chip">+</span> mostram cada estilo ao vivo e <span class="btn-chip">PWR</span> confirma.</p>
+          <div class="say"><span>Usa os olhos de gato</span><span>Abre o menu de olhos</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Robô tonto com espirais e estrelas">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" fill="none" stroke="#22d3ee" stroke-width="5" stroke-linecap="round">
+              <path d="M75 120 m0 0 a4 4 0 1 1 8 0 a10 10 0 1 1 -20 0 a16 16 0 1 1 32 0 a22 22 0 1 1 -44 0"/>
+              <path d="M165 120 m0 0 a4 4 0 1 1 8 0 a10 10 0 1 1 -20 0 a16 16 0 1 1 32 0 a22 22 0 1 1 -44 0"/>
+              <g fill="#facc15" stroke="none">
+                <path d="M40 46 l4 9 10 1 -8 6 3 10 -9 -6 -9 6 3 -10 -8 -6 10 -1z"/>
+                <path d="M190 40 l3 7 8 1 -6 5 2 8 -7 -5 -7 5 2 -8 -6 -5 8 -1z"/>
+                <path d="M120 22 l3 7 8 1 -6 5 2 8 -7 -5 -7 5 2 -8 -6 -5 8 -1z"/>
+              </g>
+            </g>
+          </svg>
+          <figcaption>Sacudido: fica tonto</figcaption>
+        </figure>
+        <div>
+          <h3>Sensor de movimento</h3>
+          <ul>
+            <li><b>Inclinar:</b> os olhos olham para o lado da inclinação.</li>
+            <li><b>Balançar ou empurrar:</b> o rosto balança junto.</li>
+            <li><b>Sacudir ou girar forte:</b> ele fica tonto, com espirais nos olhos e estrelas amarelas rodando em volta.</li>
+            <li><b>Pegar no colo:</b> se estiver dormindo, ele acorda.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Robô dormindo">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)">
+              <rect width="240" height="240" fill="#000"/>
+              <path d="M48 124 q27 18 54 0" stroke="#147f90" stroke-width="7" fill="none" stroke-linecap="round"/>
+              <path d="M138 124 q27 18 54 0" stroke="#147f90" stroke-width="7" fill="none" stroke-linecap="round"/>
+              <g fill="#d9d9d9" font-family="Bricolage Grotesque, sans-serif" font-weight="800">
+                <text x="176" y="84" font-size="18">Z</text><text x="192" y="64" font-size="23">Z</text><text x="208" y="42" font-size="28">Z</text>
+              </g>
+            </g>
+          </svg>
+          <figcaption>Dormindo: tela com brilho baixo</figcaption>
+        </figure>
+        <div>
+          <h3>Sono, humor e microexpressões</h3>
+          <ul>
+            <li>Depois de um tempo sem conversa nem movimento, ele <b>dorme</b>: fecha os olhos, mostra Zzz e a tela fica bem fraca. Acorda com o botão, com voz, com movimento ou com música.</li>
+            <li>O <b>humor muda com a hora</b>: de manhã cedo e à noite ele fica mais sonolento e dorme mais rápido.</li>
+            <li>Parado, ele faz <b>microexpressões</b>: pisca, olha em volta e boceja.</li>
+            <li>Na conversa, os olhos mostram feliz, rindo, triste, chorando com lágrimas, bravo, surpreso, pensando e <b>apaixonado</b>, com olhos de coração.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Tela girada de cabeça para baixo">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)"><g transform="rotate(180 130 130)"><use href="#eyes" x="10" y="10" width="240" height="240"/></g></g>
+            <path d="M226 236 a18 18 0 1 0 -6 12" fill="none" stroke="#facc15" stroke-width="3"/>
+            <path d="M216 252 l6 -6 2 9z" fill="#facc15"/>
+          </svg>
+          <figcaption>Tela girada 180°</figcaption>
+        </figure>
+        <div>
+          <h3>Girar a tela</h3>
+          <p>Gira 90°, 180° ou 270°, para usar o robô em pé, deitado ou pendurado. O sensor de movimento gira junto e a posição fica salva.</p>
+          <div class="say"><span>Vira a tela de cabeça para baixo</span><span>Gira a tela 90 graus</span><span>Volta a tela ao normal</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section id="tempo">
+      <h2>Timer, alarme e lembrete</h2>
+      <p class="lead">Ele conta o tempo mesmo quando você não está conversando.</p>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Contagem regressiva sobre os olhos">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)"><use href="#eyes" x="10" y="10" width="240" height="240"/></g>
+            <g transform="translate(10,10)" font-family="JetBrains Mono, monospace" text-anchor="middle">
+              <rect x="78" y="196" width="84" height="28" rx="14" fill="#1f2937"/>
+              <text x="120" y="215" fill="#fff" font-size="15">04:59</text>
+            </g>
+          </svg>
+          <figcaption>Timer correndo</figcaption>
+        </figure>
+        <div>
+          <h3>Como usar</h3>
+          <div class="say"><span>Timer de 5 minutos</span><span>Me acorda às 7 horas</span><span>Me lembra de tirar o bolo às 15h30</span><span>Quais alarmes eu tenho?</span><span>Cancela o alarme das 7</span></div>
+          <p>O próximo timer aparece numa etiqueta embaixo dos olhos. Na hora, ele toca bipes que <b>sobem de tom e de volume</b> por até 60 segundos e fala o que era o lembrete.</p>
+          <p><b>Para desligar:</b> aperte qualquer botão ou sacuda o robô.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section id="memoria">
+      <h2>Memória pessoal</h2>
+      <p class="lead">Ele guarda o que você pedir para lembrar, mesmo depois de desligado.</p>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Aviso de lembrete na tela">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)"><use href="#eyes" x="10" y="10" width="240" height="240"/></g>
+            <g transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif">
+              <rect x="8" y="30" width="224" height="86" rx="12" fill="#1f2937" stroke="#4b5563"/>
+              <text x="18" y="50" fill="#facc15" font-size="13">Lembrete</text>
+              <text x="18" y="72" fill="#fff" font-size="14">AMANHÃ: aniversário da Ana</text>
+              <text x="18" y="94" fill="#cbd5e1" font-size="12">3 de maio</text>
+            </g>
+          </svg>
+          <figcaption>Aviso de data chegando</figcaption>
+        </figure>
+        <div>
+          <h3>Como usar</h3>
+          <div class="say"><span>Lembra que a Ana faz aniversário dia 3 de maio</span><span>Anota que meu time é o Grêmio</span><span>Quando é o aniversário da Ana?</span><span>O que você lembra de mim?</span><span>Esquece o aniversário da Ana</span></div>
+          <ul>
+            <li>Lembranças com data avisam <b>no dia anterior e no próprio dia</b>, entre 9h e 22h, na tela e por voz.</li>
+            <li>Data só com dia e mês repete todo ano.</li>
+            <li>Sem cartão SD, cabem umas 50 a 100 frases curtas. Com cartão SD, não há limite prático, e o arquivo <code>memoria.json</code> pode ser aberto no PC.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section id="musica">
+      <h2>Música, rádio e podcast</h2>
+      <p class="lead">A música toca quando você não está conversando. Ela pausa quando você fala e volta sozinha depois.</p>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Equalizador de LEDs">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" id="spectrum"></g>
+          </svg>
+          <figcaption>Equalizador enquanto toca</figcaption>
+        </figure>
+        <div>
+          <h3>Músicas do cartão SD</h3>
+          <p>Copie as músicas para qualquer pasta do cartão SD, menos a pasta <code>videos</code>. Formatos: <code>mp3</code>, <code>wav</code>, <code>flac</code>, <code>aac</code>, <code>m4a</code> e <code>ogg</code>. O nome do arquivo é o nome da música.</p>
+          <div class="say"><span>Toca música</span><span>Toca Garota de Ipanema</span><span>Toca em ordem aleatória</span><span>Pausa</span><span>Continua</span><span>Próxima</span><span>Anterior</span><span>Para a música</span><span>O que está tocando?</span><span>Quais músicas tem?</span></div>
+          <p>Enquanto toca, a tela vira um <b>equalizador de LEDs</b> com 24 barras verdes, amarelas e vermelhas.</p>
+        </div>
+      </div>
+
+      <div class="card text-only">
+        <div>
+          <h3>Da internet</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>O quê</th><th>Exemplo para falar</th><th>Detalhe</th></tr></thead>
+              <tbody>
+                <tr><td>Rádio</td><td>"Toca a rádio Jovem Pan" · "Toca uma rádio de jazz"</td><td>"Próxima" troca de estação</td></tr>
+                <tr><td>Podcast</td><td>"Toca o último episódio do Nerdcast"</td><td>"Próxima" vai para episódios mais antigos</td></tr>
+                <tr><td>Música livre</td><td>"Toca música livre de piano clássico"</td><td>Músicas de domínio público do Internet Archive. Não tem músicas de artistas famosos</td></tr>
+                <tr><td>Link direto</td><td>"Toca este link: …"</td><td>Endereço de um arquivo MP3, AAC ou OGG</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Música reconhecida">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif">
+              <rect width="240" height="240" fill="#1e293b"/>
+              <rect x="60" y="34" width="120" height="120" rx="8" fill="#f97316"/>
+              <circle cx="120" cy="94" r="38" fill="#111827"/><circle cx="120" cy="94" r="8" fill="#f97316"/>
+              <text x="120" y="186" fill="#fff" font-size="15" text-anchor="middle">Nome da Música</text>
+              <text x="120" y="208" fill="#cbd5e1" font-size="13" text-anchor="middle">Artista</text>
+            </g>
+          </svg>
+          <figcaption>Capa, nome e artista</figcaption>
+        </figure>
+        <div>
+          <h3>Que música é essa?</h3>
+          <p>Ele ouve 10 segundos de uma música tocando perto e mostra o nome, o artista e a capa.</p>
+          <div class="say"><span>Que música é essa?</span><span>Descobre essa música</span></div>
+          <p class="note">Precisa de uma chave grátis do AudD (dashboard.audd.io). Cole a chave na <a href="#config">página de configurações</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section id="videos">
+      <h2>Vídeos do cartão SD</h2>
+      <p class="lead">Os vídeos precisam ser convertidos no PC antes. O robô toca imagem 240×240 a 15 quadros por segundo, com som.</p>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Vídeo na tela">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)">
+              <rect width="240" height="240" fill="#38bdf8"/>
+              <rect y="160" width="240" height="80" fill="#4ade80"/>
+              <circle cx="186" cy="56" r="22" fill="#fde047"/>
+              <path d="M30 160 l40 -50 40 50z" fill="#15803d"/><path d="M90 160 l50 -66 50 66z" fill="#166534"/>
+              <circle cx="120" cy="120" r="30" fill="#000" opacity=".45"/><path d="M110 104 l26 16 -26 16z" fill="#fff"/>
+            </g>
+          </svg>
+          <figcaption>Vídeo tocando</figcaption>
+        </figure>
+        <div>
+          <h3>Como tocar</h3>
+          <p>Cada vídeo vira dois arquivos com o mesmo nome: <code>nome.mjpeg</code> (imagem) e <code>nome.mp3</code> (som). Os dois ficam na pasta <code>videos</code>, na raiz do cartão SD. O jeito de criar esses arquivos está logo abaixo.</p>
+          <div class="say"><span>Quais vídeos tem?</span><span>Toca o vídeo da turma</span><span>Pausa</span><span>Para o vídeo</span></div>
+          <p>Quando você fala com ele, o vídeo pausa e o rosto volta. Ele continua do mesmo ponto depois.</p>
+        </div>
+      </div>
+
+      <div class="card text-only">
+        <div>
+          <h3>Passo 1 · Instalar o ffmpeg (uma vez só)</h3>
+          <p>O ffmpeg é um programa gratuito que converte vídeos.</p>
+          <ul>
+            <li><b>Windows 10 ou 11:</b> abra o menu Iniciar, digite <code>cmd</code>, abra o Prompt de Comando e cole a linha abaixo. Depois feche e abra o Prompt de novo.</li>
+          </ul>
+          <div class="code"><pre>winget install --id Gyan.FFmpeg -e</pre><button type="button" class="copy">Copiar</button></div>
+          <ul>
+            <li><b>Mac:</b> com o Homebrew instalado, rode <code>brew install ffmpeg</code> no Terminal.</li>
+            <li><b>Linux:</b> rode <code>sudo apt install ffmpeg</code>.</li>
+          </ul>
+
+          <h3>Passo 2 · Converter um vídeo</h3>
+          <p>No Prompt (ou Terminal), entre na pasta do vídeo. No Windows, digite <code>cd</code>, um espaço, arraste a pasta para a janela e aperte Enter. Depois rode os dois comandos, trocando <code>meu video</code> pelo nome do seu arquivo:</p>
+          <div class="code"><pre>ffmpeg -i "meu video.mp4" -an -vf "scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2:black,fps=15" -c:v mjpeg -q:v 6 -pix_fmt yuvj420p -f mjpeg "meu video.mjpeg"</pre><button type="button" class="copy">Copiar</button></div>
+          <div class="code"><pre>ffmpeg -i "meu video.mp4" -vn -ac 1 -ar 24000 -c:a libmp3lame -b:a 64k "meu video.mp3"</pre><button type="button" class="copy">Copiar</button></div>
+          <p class="note">Se o vídeo não tiver som, o segundo comando dá erro. Nesse caso, crie um som mudo com a duração do vídeo em segundos, aqui 60: <code>ffmpeg -f lavfi -i anullsrc=r=24000:cl=mono -t 60 -c:a libmp3lame "meu video.mp3"</code></p>
+
+          <h3>Atalho para o Windows: converter arrastando</h3>
+          <p>Para não digitar comandos toda vez:</p>
+          <ol>
+            <li>Abra o Bloco de Notas e cole o texto abaixo.</li>
+            <li>Clique em Arquivo › Salvar como, escolha "Todos os arquivos" e salve como <code>converter.bat</code>.</li>
+            <li>Arraste um ou mais vídeos em cima desse arquivo. Ele cria a pasta <code>videos</code> ao lado dele, pronta para copiar para o cartão.</li>
+          </ol>
+          <div class="code"><pre>@echo off
+chcp 65001 &gt;nul
+set "SAIDA=%~dp0videos"
+if not exist "%SAIDA%" mkdir "%SAIDA%"
+for %%F in (%*) do (
+  echo Convertendo %%~nxF
+  ffmpeg -hide_banner -loglevel error -y -i "%%~fF" -an -vf "scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2:black,fps=15" -c:v mjpeg -q:v 6 -pix_fmt yuvj420p -f mjpeg "%SAIDA%\%%~nF.mjpeg"
+  ffmpeg -hide_banner -loglevel error -y -i "%%~fF" -vn -ac 1 -ar 24000 -c:a libmp3lame -b:a 64k "%SAIDA%\%%~nF.mp3"
+)
+echo Pronto! Copie a pasta "videos" para o cartao SD.
+pause</pre><button type="button" class="copy">Copiar</button></div>
+
+          <h3>Passo 3 · Copiar para o cartão</h3>
+          <p>Desligue o robô, tire o cartão SD e coloque no PC. Crie a pasta <code>videos</code> na raiz do cartão, se ainda não existir, e copie para ela os arquivos <code>.mjpeg</code> e <code>.mp3</code>. Devolva o cartão ao robô.</p>
+          <p>Um minuto de vídeo ocupa uns 10 a 15 MB.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section id="jogos">
+      <h2>Jogos</h2>
+      <p class="lead">Durante os jogos, os olhos e as legendas somem para dar espaço à tela do jogo.</p>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Dado mostrando 5">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)">
+              <rect x="62" y="62" width="116" height="116" rx="22" fill="#f8fafc"/>
+              <g fill="#111827"><circle cx="92" cy="92" r="10"/><circle cx="148" cy="92" r="10"/><circle cx="120" cy="120" r="10"/><circle cx="92" cy="148" r="10"/><circle cx="148" cy="148" r="10"/></g>
+            </g>
+          </svg>
+          <figcaption>Dado rolando e quicando</figcaption>
+        </figure>
+        <div>
+          <h3>Dado, moeda e número</h3>
+          <p>O dado gira, quica e vai parando até mostrar o resultado.</p>
+          <div class="say"><span>Joga um dado</span><span>Cara ou coroa</span><span>Sorteia um número de 1 a 100</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Pergunta de quiz com três opções">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif">
+              <text x="120" y="38" fill="#fff" font-size="14" text-anchor="middle">Qual o maior planeta?</text>
+              <rect x="16" y="62" width="208" height="40" rx="10" fill="#1e3a8a"/><text x="30" y="88" fill="#fff" font-size="14">A  Terra</text>
+              <rect x="16" y="112" width="208" height="40" rx="10" fill="#15803d"/><text x="30" y="138" fill="#fff" font-size="14">B  Júpiter</text>
+              <rect x="16" y="162" width="208" height="40" rx="10" fill="#1e3a8a"/><text x="30" y="188" fill="#fff" font-size="14">C  Marte</text>
+              <rect x="16" y="218" width="150" height="6" rx="3" fill="#facc15"/>
+            </g>
+          </svg>
+          <figcaption>Quiz: − A · PWR B · + C</figcaption>
+        </figure>
+        <div>
+          <h3>Quiz e Verdadeiro ou falso</h3>
+          <p>Ele faz perguntas com 3 opções e um tempo para responder. Responda pelos botões (<span class="btn-chip">−</span> A, <span class="btn-chip">PWR</span> B, <span class="btn-chip">+</span> C) ou falando. No fim, mostra os pontos e o recorde.</p>
+          <div class="say"><span>Vamos jogar quiz de história</span><span>Quiz de futebol, nível difícil</span><span>Jogo de verdadeiro ou falso sobre animais</span><span>Para o quiz</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Jogo da forca">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif">
+              <text x="10" y="44" fill="#facc15" font-size="13">Dica: fruta</text>
+              <g stroke="#9a9a9a" stroke-width="4" stroke-linecap="round"><path d="M20 170 H100 M40 170 V60 H85 V74"/></g>
+              <circle cx="85" cy="85" r="11" stroke="#fff" stroke-width="4" fill="none"/>
+              <path d="M85 96 V132 M85 104 L70 120 M85 104 L100 120" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+              <text x="132" y="90" fill="#ef4444" font-size="15">E  O  U</text>
+              <text x="120" y="210" fill="#fff" font-size="22" text-anchor="middle" letter-spacing="3">B A N A N A</text>
+            </g>
+          </svg>
+          <figcaption>Forca</figcaption>
+        </figure>
+        <div>
+          <h3>Forca</h3>
+          <p>Ele escolhe uma palavra com dica e você fala as letras, ou chuta a palavra inteira. São 6 erros para perder.</p>
+          <p><b>Dica:</b> fale a letra junto com uma palavra, como <i>"I de igreja"</i> ou <i>"B de bola"</i>. Letras soltas se confundem fácil no reconhecimento de voz (E e I, B e D, M e N).</p>
+          <div class="say"><span>Vamos jogar forca</span><span>A de abacaxi</span><span>É banana!</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Gênio fazendo uma pergunta">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif">
+              <text x="120" y="30" fill="#cbd5e1" font-size="13" text-anchor="middle">Pergunta 14</text>
+              <rect x="10" y="38" width="220" height="5" rx="2" fill="#27272a"/>
+              <rect x="10" y="38" width="140" height="5" rx="2" fill="#facc15"/>
+              <text x="120" y="70" fill="#fff" font-size="14" text-anchor="middle">Seu personagem é de</text>
+              <text x="120" y="88" fill="#fff" font-size="14" text-anchor="middle">um desenho animado?</text>
+              <rect x="16" y="108" width="208" height="34" rx="10" fill="#b91c1c"/><text x="30" y="130" fill="#fff" font-size="14">Não</text>
+              <rect x="16" y="150" width="208" height="34" rx="10" fill="#52525b"/><text x="30" y="172" fill="#fff" font-size="14">Não sei</text>
+              <rect x="16" y="192" width="208" height="34" rx="10" fill="#15803d"/><text x="30" y="214" fill="#fff" font-size="14">Sim</text>
+            </g>
+          </svg>
+          <figcaption>A barra mostra o quanto ele está certo</figcaption>
+        </figure>
+        <div>
+          <h3>Gênio (adivinhação sem limite)</h3>
+          <p>Pense em um <b>personagem</b> (real ou de ficção), um <b>animal</b> ou um <b>objeto</b>. O gênio faz perguntas até descobrir. <b>Não há limite de perguntas.</b></p>
+          <ul>
+            <li><b>Responda falando:</b> "sim", "não", "não sei", "provavelmente sim" ou "provavelmente não". Ou use os botões: <span class="btn-chip">−</span> não, <span class="btn-chip">PWR</span> não sei, <span class="btn-chip">+</span> sim.</li>
+            <li>A <b>barra de certeza</b> vai de roxo (com dúvida) a verde (quase certo).</li>
+            <li>Quando acha que sabe, ele dá o palpite com uma foto. Responda com <span class="btn-chip">+</span> (acertou) ou <span class="btn-chip">−</span> (errou).</li>
+            <li>Se errar, o jogo <b>continua</b>: ele faz mais perguntas e não repete o palpite errado.</li>
+            <li>O robô guarda o jogo inteiro, então o gênio não esquece o que você já respondeu.</li>
+          </ul>
+          <div class="say"><span>Vamos jogar o gênio</span><span>Pensei em um personagem</span><span>Provavelmente não</span><span>Desisto, quem era?</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Labirinto com bolinha">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" id="maze"></g>
+          </svg>
+          <figcaption>Labirinto: incline o robô</figcaption>
+        </figure>
+        <div>
+          <h3>Labirinto de inclinação</h3>
+          <p>Incline o robô para rolar a bolinha até a saída verde.</p>
+          <ul>
+            <li><b>Moedas</b> dão pontos e <b>relógios</b> dão mais tempo.</li>
+            <li><b>Buracos</b> tiram uma das 3 vidas.</li>
+            <li>A cada nível, o labirinto cresce e a bolinha fica mais rápida.</li>
+            <li><span class="btn-chip">PWR</span> sai do jogo. O recorde fica salvo.</li>
+          </ul>
+          <div class="say"><span>Vamos jogar labirinto</span><span>Para o labirinto</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section id="internet">
+      <h2>Internet, notícias e fotos</h2>
+      <p class="lead">Para coisas recentes ou que ele não sabe, ele pesquisa e cita a fonte.</p>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Foto da Torre Eiffel na tela">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif">
+              <rect width="240" height="240" fill="#7dd3fc"/>
+              <path d="M120 30 L132 120 L150 210 H128 L120 160 L112 210 H90 L108 120 Z" fill="#78350f"/>
+              <rect x="100" y="118" width="40" height="6" fill="#78350f"/>
+              <rect y="204" width="240" height="36" fill="#000" opacity=".6"/>
+              <text x="120" y="227" fill="#fff" font-size="14" text-anchor="middle">Torre Eiffel</text>
+            </g>
+          </svg>
+          <figcaption>Foto da Wikipedia</figcaption>
+        </figure>
+        <div>
+          <h3>Como usar</h3>
+          <div class="say"><span>Pesquisa quem ganhou o jogo do Grêmio ontem</span><span>Quais as notícias de hoje?</span><span>Notícias de tecnologia</span><span>Mostra uma foto da Torre Eiffel</span><span>Mostra a imagem deste link: …</span></div>
+          <ul>
+            <li><b>Sem chave:</b> pesquisa na Wikipedia e nas notícias do Google Notícias.</li>
+            <li><b>Com chave do Brave Search</b> (grátis, opcional): pesquisa na web inteira. Cole a chave na <a href="#config">página de configurações</a>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section id="clima">
+      <h2>Clima e cotações</h2>
+      <p class="lead">Os dois serviços são grátis e não pedem chave. A tela some sozinha depois de 20 segundos.</p>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Tela do clima">
+            <use href="#frame" width="260" height="300"/>
+            <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#0c1a3a"/></linearGradient></defs>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif">
+              <rect width="240" height="240" fill="url(#sky)"/>
+              <text x="120" y="30" fill="#cbd5e1" font-size="13" text-anchor="middle">Porto Alegre</text>
+              <g stroke="#fde047" stroke-width="4" stroke-linecap="round"><path d="M62 44 v-6 M62 120 v6 M24 82 h-6 M100 82 h6 M35 55 l-5 -5 M89 109 l5 5 M89 55 l5 -5 M35 109 l-5 5"/></g>
+              <circle cx="62" cy="82" r="24" fill="#facc15"/>
+              <text x="124" y="104" fill="#fff" font-size="50" font-family="Bricolage Grotesque, sans-serif" font-weight="600">27°</text>
+              <text x="120" y="140" fill="#e2e8f0" font-size="13" text-anchor="middle">Céu limpo</text>
+              <g font-size="12">
+                <rect x="8" y="150" width="224" height="21" rx="8" fill="#fff" opacity=".09"/><text x="14" y="165" fill="#cbd5e1">Hoje</text><text x="94" y="165" fill="#fff">30° / 19°</text><text x="228" y="165" fill="#94a3b8" text-anchor="end">10%</text>
+                <rect x="8" y="174" width="224" height="21" rx="8" fill="#fff" opacity=".09"/><text x="14" y="189" fill="#cbd5e1">Amanhã</text><text x="94" y="189" fill="#fff">31° / 20°</text><text x="228" y="189" fill="#93c5fd" text-anchor="end">40%</text>
+                <rect x="8" y="198" width="224" height="21" rx="8" fill="#fff" opacity=".09"/><text x="14" y="213" fill="#cbd5e1">Qui</text><text x="94" y="213" fill="#fff">24° / 17°</text><text x="228" y="213" fill="#60a5fa" text-anchor="end">80%</text>
+              </g>
+            </g>
+          </svg>
+          <figcaption>Clima com previsão de 3 dias</figcaption>
+        </figure>
+        <div>
+          <h3>Clima</h3>
+          <div class="say"><span>Como está o tempo em Porto Alegre?</span><span>Vai chover amanhã?</span><span>Previsão para o fim de semana</span></div>
+          <p>A cidade que você falar fica salva. Depois basta perguntar "e o tempo hoje?".</p>
+          <p><b>Alerta de chuva:</b> com uma cidade salva, ele confere a cada 30 minutos, entre 7h e 22h. Se vier tempestade ou chuva forte nas próximas 3 horas, ele avisa.</p>
+        </div>
+      </div>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Tela de cotações">
+            <use href="#frame" width="260" height="300"/>
+            <defs><linearGradient id="money" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#064e3b"/><stop offset="1" stop-color="#020617"/></linearGradient></defs>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif" font-size="13">
+              <rect width="240" height="240" fill="url(#money)"/>
+              <text x="120" y="34" fill="#cbd5e1" text-anchor="middle">Cotações  14:32</text>
+              <g>
+                <rect x="8" y="52" width="224" height="29" rx="8" fill="#fff" opacity=".09"/><text x="14" y="71" fill="#cbd5e1">Dólar</text><text x="78" y="71" fill="#fff">R$ 5,44</text><text x="228" y="71" fill="#f87171" text-anchor="end">-0,1%</text>
+                <rect x="8" y="86" width="224" height="29" rx="8" fill="#fff" opacity=".09"/><text x="14" y="105" fill="#cbd5e1">Euro</text><text x="78" y="105" fill="#fff">R$ 6,08</text><text x="228" y="105" fill="#4ade80" text-anchor="end">+1,2%</text>
+                <rect x="8" y="120" width="224" height="29" rx="8" fill="#fff" opacity=".09"/><text x="14" y="139" fill="#cbd5e1">Libra</text><text x="78" y="139" fill="#fff">R$ 7,12</text><text x="228" y="139" fill="#4ade80" text-anchor="end">+0,3%</text>
+                <rect x="8" y="154" width="224" height="29" rx="8" fill="#fff" opacity=".09"/><text x="14" y="173" fill="#cbd5e1">Bitcoin</text><text x="78" y="173" fill="#fff">R$ 612.345</text><text x="228" y="173" fill="#f87171" text-anchor="end">-2,4%</text>
+              </g>
+            </g>
+          </svg>
+          <figcaption>Cotações em reais (valores de exemplo)</figcaption>
+        </figure>
+        <div>
+          <h3>Cotações</h3>
+          <div class="say"><span>Quanto está o dólar?</span><span>Cotação do peso argentino e do ethereum</span><span>Quanto é 100 euros em reais?</span></div>
+          <p>Sem pedir uma moeda específica, ele mostra dólar, euro, libra e bitcoin. A variação do dia aparece em verde (subiu) ou vermelho (caiu).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section id="tradutor">
+      <h2>Tradutor</h2>
+      <p class="lead">Um intérprete de bolso para conversar com quem fala outra língua.</p>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Tela do tradutor">
+            <use href="#frame" width="260" height="300"/>
+            <defs><linearGradient id="tr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#312e81"/><stop offset="1" stop-color="#020617"/></linearGradient></defs>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif" text-anchor="middle">
+              <rect width="240" height="240" fill="url(#tr)"/>
+              <text x="120" y="30" fill="#cbd5e1" font-size="13">Tradutor: inglês</text>
+              <text x="120" y="62" fill="#e2e8f0" font-size="14">Onde fica a estação</text>
+              <text x="120" y="82" fill="#e2e8f0" font-size="14">de metrô?</text>
+              <text x="120" y="126" fill="#fff" font-size="17">Where is the</text>
+              <text x="120" y="150" fill="#fff" font-size="17">subway station?</text>
+            </g>
+          </svg>
+          <figcaption>Original em cima, tradução embaixo</figcaption>
+        </figure>
+        <div>
+          <h3>Como usar</h3>
+          <div class="say"><span>Modo tradutor para inglês</span><span>Tradutor de espanhol</span><span>Para de traduzir</span></div>
+          <p>Cada frase em português ele fala traduzida. Quando a outra pessoa responde na língua dela, ele traduz de volta para o português. A tela mostra as duas frases.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Home Assistant -->
+    <section id="casa">
+      <h2>Casa inteligente (Home Assistant)</h2>
+      <p class="lead">O robô controla lâmpadas, tomadas, interruptores, ventiladores, cortinas, ar-condicionado, fechaduras, cenas e automações cadastrados no Home Assistant, de qualquer marca que o Home Assistant aceite.</p>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Aviso de luz desligada">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)"><use href="#eyes" x="10" y="10" width="240" height="240"/></g>
+            <g transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif">
+              <rect x="8" y="30" width="224" height="86" rx="12" fill="#1f2937" stroke="#4b5563"/>
+              <text x="18" y="50" fill="#facc15" font-size="13">Casa</text>
+              <text x="18" y="72" fill="#fff" font-size="14">Desligado</text>
+              <text x="18" y="94" fill="#cbd5e1" font-size="12">light.sala</text>
+            </g>
+          </svg>
+          <figcaption>Aviso depois de cada comando</figcaption>
+        </figure>
+        <div>
+          <h3>Como usar</h3>
+          <div class="say"><span>Apaga a luz da sala</span><span>Acende a luz do quarto em azul a 30%</span><span>Deixa a luz da cozinha branco quente</span><span>Liga o ventilador</span><span>Fecha a cortina</span><span>Coloca o ar em 23 graus</span><span>Ativa a cena cinema</span><span>A luz da varanda está acesa?</span><span>Quais luzes eu tenho?</span></div>
+          <p>Os nomes usados são os mesmos do Home Assistant. Dar a cada aparelho um nome e um cômodo (área) claros ajuda o robô a acertar.</p>
+        </div>
+      </div>
+      <div class="card text-only">
+        <div>
+          <h3>Como ligar o robô ao Home Assistant</h3>
+          <ol>
+            <li>No Home Assistant, clique no seu <b>nome de usuário</b> (canto inferior esquerdo) e abra a aba <b>Segurança</b>.</li>
+            <li>Em <b>Tokens de acesso de longa duração</b>, clique em <b>Criar token</b>, dê o nome "Robô" e copie o token. Ele só aparece uma vez.</li>
+            <li>Diga ao robô <i>"abre as configurações"</i> e escaneie o QR code com o celular.</li>
+            <li>Preencha o <b>endereço</b> do Home Assistant (o mesmo que você abre no navegador, por exemplo <code>http://192.168.0.10:8123</code>) e cole o <b>token</b>. Toque em Salvar.</li>
+          </ol>
+          <p class="note">O robô e o Home Assistant precisam estar na mesma rede WiFi, a não ser que o seu Home Assistant tenha um endereço de acesso pela internet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section id="config">
+      <h2>Página de configurações</h2>
+      <p class="lead">Chaves longas não dá para ditar. Elas são coladas pelo celular.</p>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="QR code da página de configurações">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)" transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif" text-anchor="middle">
+              <text x="120" y="34" fill="#fff" font-size="14">Configurações</text>
+              <g id="qr"></g>
+              <text x="120" y="222" fill="#d1d5db" font-size="12">http://192.168.0.42/</text>
+            </g>
+          </svg>
+          <figcaption>Escaneie com a câmera do celular</figcaption>
+        </figure>
+        <div>
+          <h3>Como usar</h3>
+          <ol>
+            <li>Diga <i>"abre as configurações"</i>. A tela mostra um QR code.</li>
+            <li>Com o celular <b>na mesma rede WiFi</b>, aponte a câmera para o QR code e abra a página.</li>
+            <li>Cole a chave do <b>AudD</b> (reconhecer músicas), do <b>Brave Search</b> (pesquisa na web) ou o endereço e o token do <b>Home Assistant</b> (casa inteligente) e toque em Salvar.</li>
+          </ol>
+          <p>A página fecha sozinha em 5 minutos, ou na hora com <span class="btn-chip">PWR</span>. Um campo deixado em branco mantém a chave que já estava salva.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 -->
+    <section id="pc">
+      <h2>Robô e PC</h2>
+      <p class="lead">Há duas formas de o robô mexer no seu computador.</p>
+      <div class="card text-only">
+        <div>
+          <h3>Pela internet: ferramentas no PC (MCP)</h3>
+          <p>O MCP é um jeito de dar ao robô novas habilidades que rodam no seu computador: ler arquivos, fazer contas, consultar um programa seu. Um pequeno programa em Python fica aberto no PC e se conecta ao robô pela internet. Não precisa de cabo.</p>
+          <ol>
+            <li><b>Instale o Python 3.10 ou mais novo</b> pelo site python.org. Na instalação, marque <i>Add Python to PATH</i>.</li>
+            <li><b>Baixe o exemplo oficial</b> do projeto xiaozhi: em <code>github.com/78/mcp-calculator</code>, clique em <i>Code › Download ZIP</i> e extraia a pasta.</li>
+            <li><b>Instale as dependências:</b> abra o Prompt dentro da pasta extraída e rode:
+              <div class="code"><pre>pip install -r requirements.txt</pre><button type="button" class="copy">Copiar</button></div></li>
+            <li><b>Pegue o endereço MCP do seu robô:</b> entre em xiaozhi.me com a conta onde o robô está ativado, abra as configurações do agente e procure a opção <i>MCP</i>. Copie o endereço, que começa com <code>wss://</code>.</li>
+            <li><b>Ligue o programa</b>, colando o seu endereço no lugar do exemplo:
+              <div class="code"><pre>set MCP_ENDPOINT=wss://cole-aqui-o-seu-endereco
+python mcp_pipe.py calculator.py</pre><button type="button" class="copy">Copiar</button></div>
+              No Mac ou Linux, troque <code>set</code> por <code>export</code>. Deixe a janela aberta enquanto quiser usar.</li>
+          </ol>
+          <p>O exemplo ensina o robô a fazer contas no PC. Experimente: <i>"quanto é a raiz quadrada de 7 vezes 3?"</i></p>
+
+          <h3>Criar suas próprias ferramentas</h3>
+          <p>Cada função marcada com <code>@mcp.tool()</code> vira uma habilidade nova. O robô lê a descrição para saber quando usar. Exemplo que deixa o robô listar e ler arquivos de uma pasta: salve como <code>meu_pc.py</code> na mesma pasta e rode <code>python mcp_pipe.py meu_pc.py</code>.</p>
+          <div class="code"><pre>from pathlib import Path
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("MeuPC")
+PASTA = Path.home() / "Documents"   # o robo so ve esta pasta
+
+@mcp.tool()
+def listar_arquivos() -&gt; list[str]:
+    """Lista os arquivos da pasta Documentos do usuario."""
+    return [p.name for p in PASTA.iterdir()][:100]
+
+@mcp.tool()
+def ler_arquivo(nome: str) -&gt; str:
+    """Le um arquivo de texto da pasta Documentos pelo nome."""
+    caminho = (PASTA / nome).resolve()
+    if PASTA.resolve() not in caminho.parents:
+        return "Fora da pasta permitida."
+    return caminho.read_text(encoding="utf-8")[:4000]
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")</pre><button type="button" class="copy">Copiar</button></div>
+          <div class="say"><span>Lista meus documentos</span><span>Lê o arquivo notas.txt</span></div>
+          <p class="note">Só dê ao robô acesso ao que for seguro. Qualquer pessoa que falar com ele pode usar essas ferramentas. Evite ferramentas que apagam arquivos ou rodam comandos.</p>
+        </div>
+      </div>
+      <div class="card">
+        <figure>
+          <svg viewBox="0 0 260 300" role="img" aria-label="Aviso de teclado USB ligado">
+            <use href="#frame" width="260" height="300"/>
+            <g clip-path="url(#scr)"><use href="#eyes" x="10" y="10" width="240" height="240"/></g>
+            <g transform="translate(10,10)" font-family="Atkinson Hyperlegible, sans-serif">
+              <rect x="8" y="30" width="224" height="86" rx="12" fill="#1f2937" stroke="#4b5563"/>
+              <text x="18" y="50" fill="#facc15" font-size="13">Teclado USB</text>
+              <text x="18" y="72" fill="#fff" font-size="14">Digitando...</text>
+              <text x="18" y="94" fill="#cbd5e1" font-size="12">412 caracteres</text>
+            </g>
+          </svg>
+          <figcaption>Modo teclado digitando</figcaption>
+        </figure>
+        <div>
+          <h3>Pelo cabo: modo teclado USB</h3>
+          <p>O robô vira um teclado e digita na janela aberta do PC. Acentos e símbolos saem certos em teclado ABNT2 ou americano. Funciona só no Windows.</p>
+          <ol>
+            <li>Ligue o robô no PC pelo cabo e diga <i>"liga o modo teclado"</i>.</li>
+            <li>Abra o <b>Bloco de Notas</b> e clique dentro dele.</li>
+            <li>Peça o que escrever. Ele digita sozinho.</li>
+          </ol>
+          <div class="say"><span>Escreve um programa em Python que mostra a tabuada do 7</span><span>Aperta ctrl+s</span><span>Cancela a digitação</span><span>Desliga o modo teclado</span></div>
+          <p class="note">Com o modo ligado, qualquer pessoa que falar com o robô pode digitar e usar atalhos no seu PC. Ligue só quando for usar. Ao desligar o modo, ou ao reiniciar, o USB volta ao normal.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Specs -->
+    <section id="specs">
+      <h2>Especificações</h2>
+      <div class="card text-only">
+        <div>
+          <h3>Hardware</h3>
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr><th>Placa</th><td>Waveshare ESP32-S3-LCD-1.54</td></tr>
+                <tr><th>Processador</th><td>ESP32-S3, 2 núcleos Xtensa LX7 a 240 MHz</td></tr>
+                <tr><th>Memória</th><td>512 KB de RAM interna · 8 MB de PSRAM · 16 MB de flash</td></tr>
+                <tr><th>Tela</th><td>1,54" IPS colorida, 240×240 pixels, controlador ST7789 (SPI) · sem toque</td></tr>
+                <tr><th>Áudio</th><td>Codec ES8311 (alto-falante) e ES7210 (microfone) · 24 kHz</td></tr>
+                <tr><th>Sensor de movimento</th><td>QMI8658, 6 eixos (acelerômetro e giroscópio)</td></tr>
+                <tr><th>Armazenamento</th><td>Slot microSD (4 bits), FAT32 · recomendado até 32 GB</td></tr>
+                <tr><th>Botões</th><td>3: <span class="btn-chip">−</span> (também BOOT), <span class="btn-chip">PWR</span> e <span class="btn-chip">+</span></td></tr>
+                <tr><th>Conexão</th><td>USB-C nativo do ESP32-S3: alimentação, gravação de firmware e modo teclado</td></tr>
+                <tr><th>WiFi</th><td>2,4 GHz, 802.11 b/g/n · <b>não conecta em redes de 5 GHz</b></td></tr>
+                <tr><th>Bluetooth</th><td>5 (LE) no chip, desligado no firmware</td></tr>
+                <tr><th>Alimentação</th><td>5 V pelo USB-C, ou bateria de lítio de 3,7 V</td></tr>
+                <tr><th>Bateria</th><td>Carrega pelo USB-C · nível medido pela placa · desliga sozinho após 5 min sem uso na bateria (exceto com música, vídeo, timer/alarme ou jogo ativo)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Software</h3>
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr><th>Firmware</th><td>Baseado no projeto de código aberto xiaozhi-esp32 (licença MIT), com rosto, jogos e funções próprias</td></tr>
+                <tr><th>Plataforma</th><td>ESP-IDF 6.1 · LVGL 9</td></tr>
+                <tr><th>Inteligência artificial</th><td>Servidor xiaozhi.me (conta gratuita, voz e personalidade configuráveis)</td></tr>
+                <tr><th>Idioma</th><td>Português do Brasil (fala, telas e configuração)</td></tr>
+                <tr><th>Palavra de ativação</th><td>"Jarvis" (WakeNet9, no próprio robô) · só com o robô no cabo</td></tr>
+                <tr><th>Áudio do cartão</th><td>MP3, WAV, FLAC, AAC, M4A, OGG</td></tr>
+                <tr><th>Vídeo do cartão</th><td>MJPEG 240×240 a 15 quadros/s + MP3 (convertido no PC com ffmpeg)</td></tr>
+                <tr><th>Serviços de internet</th><td>Open-Meteo (clima), AwesomeAPI (cotações), Wikipedia e Google Notícias (pesquisa), Radio Browser (rádios), iTunes (podcasts), Internet Archive (música livre) · opcionais com chave grátis: AudD (reconhecer música) e Brave Search (pesquisa na web)</td></tr>
+                <tr><th>Casa inteligente</th><td>Home Assistant (API REST com token de longa duração)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 -->
+    <section id="problemas">
+      <h2>Problemas comuns</h2>
+      <div class="card text-only">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Problema</th><th>O que fazer</th></tr></thead>
+            <tbody>
+              <tr><td>"Não foi possível conectar ao serviço"</td><td>Confira se o WiFi tem internet. Se você trocou de rede, diga "entra no modo de configuração de WiFi" ou refaça a configuração.</td></tr>
+              <tr><td>Ele não me ouve depois de tocar uma rádio</td><td>Aperte <span class="btn-chip">PWR</span> de novo. Se continuar, peça "para a música".</td></tr>
+              <tr><td>Ele não acorda com "Jarvis"</td><td>Confira se está no cabo: na bateria a palavra fica desligada. Fale mais perto e com clareza, "djárvis".</td></tr>
+              <tr><td>A tela travou ou não responde</td><td>Tire e coloque o cabo USB de novo. Na bateria, segure <span class="btn-chip">PWR</span> para desligar e aperte de novo para ligar.</td></tr>
+              <tr><td>Ele desligou sozinho</td><td>Na bateria, ele desliga após 5 minutos sem conversa e sem música, vídeo, alarme ou jogo. Aperte <span class="btn-chip">PWR</span> para ligar ou use o carregador.</td></tr>
+              <tr><td>O PC não reconhece o robô para gravar</td><td>Segure <span class="btn-chip">−</span> (BOOT) enquanto pluga o cabo. Se o modo teclado estiver ligado, diga "desliga o modo teclado" antes.</td></tr>
+              <tr><td>Música ou vídeo não aparecem</td><td>O cartão precisa estar em FAT32. As músicas podem ficar em qualquer pasta. Os vídeos ficam na pasta <code>videos</code>, sempre com o par <code>.mjpeg</code> e <code>.mp3</code>.</td></tr>
+              <tr><td>"Memória cheia"</td><td>Coloque um cartão SD ou peça para ele esquecer lembranças antigas.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var NS = "http://www.w3.org/2000/svg";
+  function el(parent, tag, attrs) {
+    var node = document.createElementNS(NS, tag);
+    for (var k in attrs) node.setAttribute(k, attrs[k]);
+    parent.appendChild(node);
+    return node;
+  }
+  // Spectrum: 24 LED columns, green/yellow/red segments, with peak caps.
+  var spec = document.getElementById("spectrum");
+  if (spec) {
+    el(spec, "rect", { width: 240, height: 240, fill: "#000" });
+    var levels = [10, 14, 17, 18, 16, 15, 17, 19, 16, 13, 12, 14, 15, 13, 11, 12, 10, 9, 10, 8, 7, 6, 5, 4];
+    var rows = 22, cw = 240 / 24, rh = 220 / rows;
+    for (var c = 0; c < 24; c++) {
+      for (var r = 0; r < rows; r++) {
+        var lit = r < levels[c];
+        var color = r >= 18 ? "#ef4444" : r >= 13 ? "#facc15" : "#22c55e";
+        el(spec, "rect", { x: c * cw + 1, y: 228 - (r + 1) * rh, width: cw - 2, height: rh - 2, rx: 1,
+          fill: color, opacity: lit ? 1 : 0.12 });
+      }
+      var peak = Math.min(levels[c] + 2, rows - 1);
+      el(spec, "rect", { x: c * cw + 1, y: 228 - (peak + 1) * rh, width: cw - 2, height: 2, fill: "#fff" });
+    }
+  }
+  // Maze: a small fixed maze drawn as walls, plus exit, coins, a hole and the ball.
+  var maze = document.getElementById("maze");
+  if (maze) {
+    var g = el(maze, "rect", { width: 240, height: 240, fill: "#1e1b4b" });
+    var n = 6, cell = 34, x0 = 18, y0 = 30;
+    var walls = [
+      "h0,0,6", "h0,6,6", "v0,0,6", "v6,0,5",
+      "h1,1,2", "h4,1,2", "v1,1,2", "v3,0,2", "h2,2,2", "v5,1,3", "h0,3,2", "v2,3,2",
+      "h3,4,2", "v4,2,2", "h1,5,3", "v1,4,2", "h4,3,1", "v3,5,1"
+    ];
+    walls.forEach(function (w) {
+      var t = w[0], p = w.slice(1).split(",").map(Number);
+      if (t === "h") el(maze, "rect", { x: x0 + p[0] * cell, y: y0 + p[1] * cell, width: p[2] * cell + 4, height: 4, rx: 1, fill: "#c7d2fe" });
+      else el(maze, "rect", { x: x0 + p[0] * cell, y: y0 + p[1] * cell, width: 4, height: p[2] * cell + 4, rx: 1, fill: "#c7d2fe" });
+    });
+    el(maze, "circle", { cx: x0 + 5.5 * cell + 2, cy: y0 + 5.5 * cell + 2, r: 11, fill: "#22c55e" });
+    [[1.5, 0.5], [4.5, 2.5], [0.5, 4.5]].forEach(function (p) {
+      el(maze, "circle", { cx: x0 + p[0] * cell + 2, cy: y0 + p[1] * cell + 2, r: 6, fill: "#facc15", stroke: "#a16207", "stroke-width": 2 });
+    });
+    el(maze, "circle", { cx: x0 + 2.5 * cell + 2, cy: y0 + 4.5 * cell + 2, r: 9, fill: "#000", stroke: "#6b7280", "stroke-width": 2 });
+    el(maze, "circle", { cx: x0 + 0.5 * cell + 2, cy: y0 + 0.5 * cell + 2, r: 7, fill: "#e5e7eb" });
+    el(maze, "circle", { cx: x0 + 0.5 * cell, cy: y0 + 0.5 * cell, r: 2.5, fill: "#fff" });
+    var hud = el(maze, "text", { x: 120, y: 20, fill: "#fff", "font-size": 12, "text-anchor": "middle", "font-family": "JetBrains Mono, monospace" });
+    hud.textContent = "Nível 3  ♥♥♥  120 pts";
+  }
+  // QR-like pattern (illustration only): finder squares and pseudo-random modules.
+  var qr = document.getElementById("qr");
+  if (qr) {
+    var size = 25, scale = 5, ox = (240 - (size + 4) * scale) / 2, oy = 52;
+    el(qr, "rect", { x: ox, y: oy, width: (size + 4) * scale, height: (size + 4) * scale, rx: 5, fill: "#fff" });
+    var seed = 7;
+    function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+    function finder(fx, fy) {
+      for (var y = 0; y < 7; y++) for (var x = 0; x < 7; x++) {
+        var edge = x === 0 || y === 0 || x === 6 || y === 6, core = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+        if (edge || core) el(qr, "rect", { x: ox + (fx + x + 2) * scale, y: oy + (fy + y + 2) * scale, width: scale, height: scale, fill: "#000" });
+      }
+    }
+    for (var y = 0; y < size; y++) for (var x = 0; x < size; x++) {
+      var inFinder = (x < 8 && y < 8) || (x >= size - 8 && y < 8) || (x < 8 && y >= size - 8);
+      if (!inFinder && rnd() > 0.52) el(qr, "rect", { x: ox + (x + 2) * scale, y: oy + (y + 2) * scale, width: scale, height: scale, fill: "#000" });
+    }
+    finder(0, 0); finder(size - 7, 0); finder(0, size - 7);
+  }
+  // Copy buttons: clipboard when allowed, otherwise select the text for Ctrl+C.
+  document.querySelectorAll(".code .copy").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var pre = button.parentNode.querySelector("pre");
+      var done = function () { button.textContent = "Copiado"; setTimeout(function () { button.textContent = "Copiar"; }, 1500); };
+      var select = function () {
+        var range = document.createRange(); range.selectNodeContents(pre);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        button.textContent = "Ctrl+C";
+      };
+      try {
+        navigator.clipboard.writeText(pre.textContent).then(done, select);
+      } catch (e) { select(); }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
