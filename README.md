@@ -674,3 +674,12 @@ O robô vira um teclado e digita na janela aberta do PC. Acentos e símbolos sae
 | O PC parou de mostrar a porta do robô | O modo teclado pode estar ligado. Diga "desliga o modo teclado" ou reinicie o robô. |
 | Música ou vídeo não aparecem | O cartão precisa estar em FAT32. As músicas podem ficar em qualquer pasta. Os vídeos ficam na pasta `videos`, sempre com o par `.mjpeg` e `.mp3`. |
 | "Memória cheia" | Coloque um cartão SD ou peça para ele esquecer lembranças antigas. |
+
+---
+
+## Licença
+
+O firmware deste produto é baseado no projeto de código aberto [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32), distribuído sob a licença MIT. O aviso de licença está em [LICENSE-xiaozhi-esp32.txt](LICENSE-xiaozhi-esp32.txt).
+
+Este manual, os textos e as ilustrações: todos os direitos reservados.
+
