@@ -1,6 +1,6 @@
 {
   "name": "Firmware do robô (Waveshare ESP32-S3-LCD-1.54)",
-  "version": "2.5.3-2026.11.18b",
+  "version": "2.5.3-2026.11.18c",
   "new_install_prompt_erase": true,
   "builds": [
     {

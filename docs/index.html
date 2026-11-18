@@ -230,7 +230,7 @@ a { color: var(--accent); }
             <li><b>Carregar:</b> ligue o cabo USB-C num carregador de celular. Ele funciona normalmente enquanto carrega.</li>
             <li><b>Ver a carga:</b> pergunte <i>"quanto de bateria você tem?"</i>.</li>
           </ul>
-          <p class="note">Na bateria, para economizar, ele se desliga sozinho depois de <b>5 minutos sem conversa</b>. Ele <b>não</b> desliga enquanto toca música ou vídeo, enquanto há um timer ou alarme marcado, ou durante o labirinto. Com um alarme para o dia seguinte, ele fica ligado a noite toda e gasta bateria: nesse caso, deixe no carregador. No carregador, ele nunca se desliga sozinho. Os avisos de lembretes da memória e o alerta de chuva só funcionam com ele ligado.</p>
+          <p class="note">Ele <b>nunca se desliga sozinho</b>. Na bateria, depois de 1 minuto sem conversa, ele escurece a tela para economizar, mas continua ligado. Para desligar, segure o botão <span class="btn-chip">PWR</span>. Ligado na bateria o tempo todo, ela acaba: quando não for usar, desligue ou deixe no carregador. Os avisos de lembretes da memória e o alerta de chuva só funcionam com ele ligado.</p>
           <h3>Conversar</h3>
           <p>Diga <b>"Jarvis"</b> (pronuncia-se "djárvis") ou aperte <span class="btn-chip">PWR</span> uma vez, e fale. Ele responde e continua ouvindo. Aperte <span class="btn-chip">PWR</span> de novo para encerrar a conversa.</p>
           <p class="note">A palavra "Jarvis" só funciona com o robô <b>ligado no cabo</b> (carregador ou PC). Na bateria ela fica desligada para economizar: use o botão PWR.</p>
@@ -967,7 +967,7 @@ if __name__ == "__main__":
                 <tr><th>WiFi</th><td>2,4 GHz, 802.11 b/g/n · <b>não conecta em redes de 5 GHz</b></td></tr>
                 <tr><th>Bluetooth</th><td>5 (LE) no chip, desligado no firmware</td></tr>
                 <tr><th>Alimentação</th><td>5 V pelo USB-C, ou bateria de lítio de 3,7 V</td></tr>
-                <tr><th>Bateria</th><td>Carrega pelo USB-C · nível medido pela placa · desliga sozinho após 5 min sem uso na bateria (exceto com música, vídeo, timer/alarme ou jogo ativo)</td></tr>
+                <tr><th>Bateria</th><td>Carrega pelo USB-C · nível medido pela placa · não desliga sozinho: na bateria, escurece a tela após 1 min sem uso</td></tr>
               </tbody>
             </table>
           </div>
@@ -1003,7 +1003,7 @@ if __name__ == "__main__":
               <tr><td>Ele não me ouve depois de tocar uma rádio</td><td>Aperte <span class="btn-chip">PWR</span> de novo. Se continuar, peça "para a música".</td></tr>
               <tr><td>Ele não acorda com "Jarvis"</td><td>Confira se está no cabo: na bateria a palavra fica desligada. Fale mais perto e com clareza, "djárvis".</td></tr>
               <tr><td>A tela travou ou não responde</td><td>Tire e coloque o cabo USB de novo. Na bateria, segure <span class="btn-chip">PWR</span> para desligar e aperte de novo para ligar.</td></tr>
-              <tr><td>Ele desligou sozinho</td><td>Na bateria, ele desliga após 5 minutos sem conversa e sem música, vídeo, alarme ou jogo. Aperte <span class="btn-chip">PWR</span> para ligar ou use o carregador.</td></tr>
+              <tr><td>Ele desligou sozinho</td><td>A bateria acabou: ele não desliga sozinho. Ligue no carregador e aperte <span class="btn-chip">PWR</span> para ligar.</td></tr>
               <tr><td>O PC não reconhece o robô para gravar</td><td>Segure <span class="btn-chip">−</span> (BOOT) enquanto pluga o cabo. Se o modo teclado estiver ligado, diga "desliga o modo teclado" antes.</td></tr>
               <tr><td>Música ou vídeo não aparecem</td><td>O cartão precisa estar em FAT32. As músicas podem ficar em qualquer pasta. Os vídeos ficam na pasta <code>videos</code>, sempre com o par <code>.mjpeg</code> e <code>.mp3</code>.</td></tr>
               <tr><td>"Memória cheia"</td><td>Coloque um cartão SD ou peça para ele esquecer lembranças antigas.</td></tr>

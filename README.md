@@ -78,7 +78,7 @@ O robô funciona com uma bateria de lítio de 3,7 V ligada no conector de bateri
 - **Ver a carga:** pergunte *"quanto de bateria você tem?"*.
 
 > [!IMPORTANT]
-> Na bateria, para economizar, ele se desliga sozinho depois de **5 minutos sem conversa**. Ele **não** desliga enquanto toca música ou vídeo, enquanto há um timer ou alarme marcado, ou durante o labirinto. Com um alarme para o dia seguinte, ele fica ligado a noite toda e gasta bateria: nesse caso, deixe no carregador. No carregador, ele nunca se desliga sozinho.
+> Ele **nunca se desliga sozinho**. Na bateria, depois de 1 minuto sem conversa, ele escurece a tela para economizar, mas continua ligado. Para desligar, segure o botão `PWR`. Ligado na bateria o tempo todo, ela acaba: quando não for usar, desligue ou deixe no carregador.
 >
 > Os avisos de lembretes da memória e o alerta de chuva só funcionam com ele ligado.
 
@@ -643,7 +643,7 @@ O robô vira um teclado e digita na janela aberta do PC. Acentos e símbolos sae
 | WiFi | 2,4 GHz, 802.11 b/g/n · **não conecta em redes de 5 GHz** |
 | Bluetooth | 5 (LE) no chip, desligado no firmware |
 | Alimentação | 5 V pelo USB-C, ou bateria de lítio de 3,7 V |
-| Bateria | Carrega pelo USB-C · nível medido pela placa · desliga sozinho após 5 min sem uso na bateria (exceto com música, vídeo, timer/alarme ou jogo ativo) |
+| Bateria | Carrega pelo USB-C · nível medido pela placa · não desliga sozinho: na bateria, escurece a tela após 1 min sem uso |
 
 ### Software
 
@@ -670,7 +670,7 @@ O robô vira um teclado e digita na janela aberta do PC. Acentos e símbolos sae
 | Ele não me ouve depois de tocar uma rádio | Aperte `PWR` de novo. Se continuar, peça "para a música". |
 | Ele não acorda com "Jarvis" | Confira se está no cabo: na bateria a palavra fica desligada. Fale mais perto e com clareza, "djárvis". |
 | A tela travou ou não responde | Tire e coloque o cabo USB de novo. Na bateria, segure `PWR` para desligar e aperte de novo para ligar. |
-| Ele desligou sozinho | Na bateria, ele desliga após 5 minutos sem conversa e sem música, vídeo, alarme ou jogo. Aperte `PWR` para ligar ou use o carregador. |
+| Ele desligou sozinho | A bateria acabou: ele não desliga sozinho. Ligue no carregador e aperte `PWR` para ligar. |
 | O PC parou de mostrar a porta do robô | O modo teclado pode estar ligado. Diga "desliga o modo teclado" ou reinicie o robô. |
 | Música ou vídeo não aparecem | O cartão precisa estar em FAT32. As músicas podem ficar em qualquer pasta. Os vídeos ficam na pasta `videos`, sempre com o par `.mjpeg` e `.mp3`. |
 | "Memória cheia" | Coloque um cartão SD ou peça para ele esquecer lembranças antigas. |
