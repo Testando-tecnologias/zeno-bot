@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atualizar o robô</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<script type="module" src="https://unpkg.com/esp-web-tools@10.1.1/dist/web/install-button.js?module"></script>
+<style>
+:root {
+  --bg: #f3f6f8; --paper: #ffffff; --ink: #14212b; --muted: #55646f; --line: #d7e0e6;
+  --accent: #0e8fa8; --accent-soft: #dff3f7; --warn: #b45309; --warn-soft: #fdf0dd;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1418; --paper: #141e24; --ink: #e6eef2; --muted: #9aabb5; --line: #26343c;
+          --accent: #3cc6df; --accent-soft: #10323a; --warn: #f0a44b; --warn-soft: #34240f; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+       padding: 32px max(16px, env(safe-area-inset-left, 0px)) 64px max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+h1 { font: 800 clamp(30px, 6vw, 42px)/1.1 "Bricolage Grotesque", "Segoe UI", sans-serif; margin: 0; text-wrap: balance; }
+h2 { font: 700 21px/1.2 "Bricolage Grotesque", "Segoe UI", sans-serif; margin: 0 0 8px; }
+p { margin: 0 0 8px; }
+.lead { color: var(--muted); }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; }
+ol, ul { margin: 0; padding-left: 22px; }
+li { margin-bottom: 6px; }
+.install { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding: 28px 22px; }
+esp-web-install-button button[slot="activate"] {
+  font: 700 19px "Atkinson Hyperlegible", sans-serif; color: #fff; background: var(--accent); border: 0;
+  border-radius: 999px; padding: 14px 34px; cursor: pointer;
+}
+esp-web-install-button button[slot="activate"]:hover, esp-web-install-button button[slot="activate"]:focus-visible { filter: brightness(1.08); outline: 3px solid var(--accent-soft); }
+.unsupported, .not-allowed { color: var(--warn); }
+.note { background: var(--warn-soft); border-left: 3px solid var(--warn); border-radius: 8px; padding: 10px 14px; font-size: 15px; }
+code { font-family: Consolas, monospace; font-size: 14px; background: var(--accent-soft); border-radius: 5px; padding: 1px 6px; }
+.version { font-size: 14px; color: var(--muted); }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Atualizar o robô</h1>
+    <p class="lead">Instale a versão mais recente do firmware direto pelo navegador, com o cabo USB. Leva cerca de 2 minutos.</p>
+  </header>
+
+  <section class="card">
+    <h2>Antes de começar</h2>
+    <ul>
+      <li>Use um <b>computador</b> com <b>Google Chrome</b> ou <b>Microsoft Edge</b>. Celular, Firefox e Safari não funcionam.</li>
+      <li>Use um cabo USB-C <b>de dados</b> (alguns cabos só carregam).</li>
+      <li>Se o modo teclado USB estiver ligado, diga ao robô <i>"desliga o modo teclado"</i> antes.</li>
+    </ul>
+  </section>
+
+  <section class="card install">
+    <h2>1. Ligue o robô no computador e clique em Instalar</h2>
+    <esp-web-install-button manifest="manifest.json">
+      <button slot="activate">Instalar / atualizar</button>
+      <span slot="unsupported" class="unsupported">Este navegador não consegue acessar a porta USB. Abra esta página no Google Chrome ou no Microsoft Edge de um computador.</span>
+      <span slot="not-allowed" class="not-allowed">A página precisa ser aberta pelo endereço https:// para acessar a porta USB.</span>
+    </esp-web-install-button>
+    <p class="version">Versão: <span id="version">carregando...</span></p>
+  </section>
+
+  <section class="card">
+    <h2>2. No passo a passo que abrir</h2>
+    <ol>
+      <li>Escolha a porta do robô na lista (aparece como <code>USB JTAG/serial debug unit</code> ou <code>COM…</code>) e clique em <b>Conectar</b>.</li>
+      <li>Clique em <b>Install</b>. Se perguntar sobre <b>Erase device</b> (apagar), <b>deixe desmarcado</b>: assim o robô guarda o WiFi, a ativação e as suas configurações.</li>
+      <li>Espere a barra chegar a 100%. O robô reinicia sozinho com a versão nova.</li>
+    </ol>
+    <p class="note">Marque <b>Erase device</b> só se o suporte pedir. Isso apaga tudo, e o robô volta a pedir o WiFi e a ativação no xiaozhi.me, como na primeira vez.</p>
+  </section>
+
+  <section class="card">
+    <h2>Se o robô não aparecer na lista</h2>
+    <ol>
+      <li>Troque o cabo ou a porta USB do computador.</li>
+      <li>Tire o cabo, <b>segure o botão −</b> e ligue o cabo de novo, ainda segurando. Solte depois de 2 segundos e tente instalar outra vez.</li>
+      <li>Depois de instalar desse jeito, tire e ligue o cabo para o robô iniciar normalmente.</li>
+    </ol>
+  </section>
+
+  <p class="version">Manual completo: <a href="../">abrir o manual</a></p>
+</main>
+<script>
+  fetch("manifest.json").then(function (r) { return r.json(); }).then(function (m) {
+    document.getElementById("version").textContent = m.version;
+  }).catch(function () { document.getElementById("version").textContent = "-"; });
+</script>
+</body>
+</html>
